@@ -1,0 +1,46 @@
+---
+title: "Problema 02"
+author: "Leticia Barbosa"
+date: "Wednesday, October 15, 2014"
+output: html_document
+---
+
+A partir de informações obtidas de um banco de dados do Milion Song Dataset podemos tentar descobrir varias curiosidades. Duas das minhas curiosidades foram:
+
+1. As musicas hoje são mais longas ou mais curtas?
+
+```{r, echo=FALSE}
+library(ggplot2)
+dados1 = read.csv("C:/Users/Leticia/Documents/AD2/Problema02/song_per_year.csv")
+
+qplot(year, duration, 
+    data=dados1) + 
+        stat_smooth(method="lm", alpha=0.2) + 
+        theme_bw()
+```
+
+A partir do gráfico acima, podemos perceber que existe uma grande quantidade de musicas que seguem uma mesma linha de duração, porém, notamos que ainda assim, ao longo do tempo vão aumentando a quantidade de outliers em que a duração das musicas criadas a partir da decada de 60 aumentaram significamente e continuaram aumentando ao passar dos anos.
+
+America do norte
+48.942639, -105.029512(norte)
+39.459867, -124.189667(oeste)
+12.412871, -83.49631(sul)
+41.651058, -70.083036(leste)
+
+America do sul
+12.568905, -71.840849(norte)
+-54.665334, -66.567411(sul)
+-7.696432, -33.520538(leste)
+-4.200290, -81.333036(oeste)
+
+Africa
+14.743275, -17.691983(oeste)
+37.831696, 9.026765(norte)
+-35.487287, 19.573640(sul)
+21.912725, 59.475981(leste)
+
+Europa
+52.995115, -13.121668(oeste)
+31.325721, 85.843170(sul)
+53.416243, 63.343171(leste)
+76.302620, 63.694734(norte)
