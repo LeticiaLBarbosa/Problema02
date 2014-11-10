@@ -9,7 +9,7 @@ A partir de informações obtidas de um banco de dados do Milion Song Dataset pode
 
 1. As musicas hoje são mais longas ou mais curtas?
 
-```{r, echo=FALSE}
+```{r, echo=FAlSE, error=FALSE}
 library(ggplot2)
 dados1 = read.csv("C:/Users/Leticia/Documents/AD2/Problema02/song_per_year.csv")
 
@@ -20,3 +20,71 @@ qplot(year, duration,
 ```
 
 A partir do gráfico acima, podemos perceber que existe uma grande quantidade de musicas que seguem uma mesma linha de duração, porém, notamos que ainda assim, ao longo do tempo vão aumentando a quantidade de outliers em que a duração das musicas criadas a partir da decada de 60 aumentaram significamente e continuaram aumentando ao passar dos anos.
+
+
+2. Em que região cada gênero é mais popular?
+
+```{r, echo=FAlSE, error=FALSE}
+library(ggplot2)
+library(plyr)
+
+artist_location = read.csv("C:/Users/Leticia/Documents/AD2/Problema02/artist_location.csv")
+songs = read.csv("C:/Users/Leticia/Documents/AD2/Problema02/songs.csv")
+tags = read.csv("C:/Users/Leticia/Documents/AD2/Problema02/tags.csv")
+
+artist_track = subset(songs,select=c(artist_id,track_id))
+artist_location = subset(artist_location,select=c(artist_id,latitude,longitude))
+
+dados1 = merge(artist_location, artist_track, by="artist_id", all=TRUE)
+dados1 = dados1[!duplicated(dados1),]
+
+dados2 = merge(dados1, tags, by = "artist_id", all=TRUE)
+
+dados4 = na.omit(dados2)
+
+dados5 <- edit(dados4)
+summary(dados5)
+
+america_norte = subset(dados5, latitude >= 12.0 & latitude<= 49 & longitude >= -124 & longitude <= -70)
+america_sul = subset(dados5, latitude >= -54.0 & latitude<= 12 & longitude >= -81 & longitude <= -33)
+africa = subset(dados5, latitude >= -35.0 & latitude<= 37 & longitude >= -17 & longitude <= 59)
+europa = subset(dados5, latitude >= 31.0 & latitude<= 76 & longitude >= -13 & longitude <= 63)
+
+tag_AN = as.character(america_norte[,5])
+tag_AS = as.character(america_sul[,5])
+tag_A = as.character(africa[,5])
+tag_E = as.character(europa[,5])
+
+contador = function(lista,palavra){
+  contador = 0
+  for(tag in lista){
+    if(tag == palavra){
+      contador = contador+1
+    }
+  }
+  contador
+}
+
+rock = c(contador(tag_AN, " rock"),contador(tag_AS, " rock"),contador(tag_A, " rock"),contador(tag_E, " rock"))
+bossa_nova = c(contador(tag_AN, " bossa nova"),contador(tag_AS, " bossa nova"),contador(tag_A, " bossa nova"),contador(tag_E, " bossa nova"))
+pop = c(contador(tag_AN, " pop"),contador(tag_AS, " pop"),contador(tag_A, " pop"),contador(tag_E, " pop"))
+english = c(contador(tag_AN, " english"),contador(tag_AS, " english"),contador(tag_A, " english"),contador(tag_E, " english"))
+jazz = c(contador(tag_AN, " jazz"),contador(tag_AS, " jazz"),contador(tag_A, " jazz"),contador(tag_E, " jazz"))
+
+library(fmsb)
+
+RNGkind("Mersenne-Twister")
+set.seed(123)
+dat <- data.frame( rock=c(104, 4, 0,94), bossa_nova=c(0, 4, 0, 0), pop=c(41,0,0,54), english=c(3,0,7,109), jazz=c(11,0,0,37))
+dat <- rbind(maxmin,dat)
+
+radarchart(dat, axistype=2, pty=16, plty=1, axislabcol="black", na.itp=FALSE, title="radar chart", plwd = 2, caxislabels=c("america do norte", "america do sul", "africa", "europa"))
+```
+
+LEGENDA:
+Azul - America do Norte
+Vermelho - America do Sul
+Verde - Africa
+Preto - Europa
+
+A partir do gráfico acima podemos perceber que o jazz é mais  popular na America do Norte, o rock na America do Norte, a bossa nova na America do Sul, o pop na America do Norte, e o english é mais popular na europa
